@@ -11,9 +11,6 @@ title = 比亚迪电池检测
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json
 
-# 主程序文件
-# (main.py is automatically detected by buildozer)
-
 # Python版本
 requirements = python3,kivy==2.2.1,pyjnius,android
 
@@ -42,7 +39,7 @@ logcat_filters = *:V
 # Android API级别
 android.api = 33
 android.minapi = 29
-android.ndk = 25.2.9519653
+android.ndk = 27c
 
 # 架构支持 (车机通常是arm64-v8a)
 android.archs = arm64-v8a
