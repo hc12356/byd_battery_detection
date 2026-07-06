@@ -38,10 +38,10 @@ jobs:
           export ANDROID_HOME=$HOME/Android/Sdk
           export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
           
-          # 接受许可
+          # 强制接受所有许可 (使用 yes 管道)
           yes | sdkmanager --licenses || true
           
-          # 安装 SDK 组件 (注意：这里改为了 ndk;27.0.12077973 对应 27c)
+          # 明确安装指定版本的组件 (避免自动升级到未接受许可的版本)
           sdkmanager "platform-tools" "platforms;android-33" "build-tools;34.0.0" "ndk;27.0.12077973"
 
       - name: Build APK with Buildozer
@@ -49,11 +49,14 @@ jobs:
           export BUILDOZER_ALLOW_ROOT=1
           export ANDROID_SDK_ROOT=$HOME/Android/Sdk
           export ANDROID_HOME=$HOME/Android/Sdk
+          export PATH=$PATH:$HOME/Android/Sdk/cmdline-tools/latest/bin:$HOME/Android/Sdk/platform-tools
           
           # 开始打包
           buildozer -v android debug
         env:
           BUILDOZER_ALLOW_ROOT: 1
+          ANDROID_HOME: ${{ runner.workspace }}/Android/Sdk
+          ANDROID_SDK_ROOT: ${{ runner.workspace }}/Android/Sdk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
