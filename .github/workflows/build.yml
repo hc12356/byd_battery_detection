@@ -38,11 +38,11 @@ jobs:
           export ANDROID_HOME=$HOME/Android/Sdk
           export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
           
-          # 稳定地接受所有许可 (添加 || true 防止因许可已接受而报错)
+          # 接受许可
           yes | sdkmanager --licenses || true
           
-          # 安装必要的 SDK 组件
-          sdkmanager "platform-tools" "platforms;android-33" "build-tools;34.0.0" "ndk;25.2.9519653"
+          # 安装 SDK 组件 (注意：这里改为了 ndk;27.0.12077973 对应 27c)
+          sdkmanager "platform-tools" "platforms;android-33" "build-tools;34.0.0" "ndk;27.0.12077973"
 
       - name: Build APK with Buildozer
         run: |
