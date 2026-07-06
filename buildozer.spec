@@ -40,6 +40,7 @@ logcat_filters = *:V
 android.api = 33
 android.minapi = 29
 android.ndk = 27c
+android.sdk = 33
 
 # 架构支持 (车机通常是arm64-v8a)
 android.archs = arm64-v8a
