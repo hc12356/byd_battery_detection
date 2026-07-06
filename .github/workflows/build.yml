@@ -3,17 +3,17 @@ name: Build APK
 on:
   push:
     branches: [ master, main ]
-  workflow_dispatch: # 允许手动点击运行
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # 升级到 v4
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5  # 升级到 v5
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -25,21 +25,23 @@ jobs:
       - name: Install Android SDK & NDK
         run: |
           sudo apt-get update
-          sudo apt-get install -y openjdk-17-jdk
+          sudo apt-get install -y openjdk-17-jdk wget unzip
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           
-          # 下载 Android Command Line Tools
+          # 下载并配置 Android Command Line Tools
           cd $HOME
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip commandlinetools-linux-11076708_latest.zip
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
           mkdir -p $HOME/Android/Sdk/cmdline-tools
           mv cmdline-tools $HOME/Android/Sdk/cmdline-tools/latest
           
           export ANDROID_HOME=$HOME/Android/Sdk
           export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
           
-          # 接受许可并安装必要组件
-          yes | sdkmanager --licenses
+          # 稳定地接受所有许可 (添加 || true 防止因许可已接受而报错)
+          yes | sdkmanager --licenses || true
+          
+          # 安装必要的 SDK 组件
           sdkmanager "platform-tools" "platforms;android-33" "build-tools;34.0.0" "ndk;25.2.9519653"
 
       - name: Build APK with Buildozer
@@ -54,7 +56,7 @@ jobs:
           BUILDOZER_ALLOW_ROOT: 1
 
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4  # 升级到 v4 (修复错误的关键)
+        uses: actions/upload-artifact@v4
         with:
           name: byd-battery-app
           path: bin/*.apk
